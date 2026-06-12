@@ -397,6 +397,28 @@ class AdminService {
     async deleteLesson(articleId) {
         await pool.execute(`DELETE FROM Article WHERE article_id = ?`, [articleId]);
     }
+
+    async getAllDevices() {
+        const [devices] = await pool.execute(
+            `SELECT device_id, device_name, password, create_at FROM Device ORDER BY create_at DESC`
+        );
+        return devices;
+    }
+
+    async createDevice(deviceName, password) {
+        const [res] = await pool.execute(
+            `INSERT INTO Device (device_name, password) VALUES (?, ?)`,
+            [deviceName, password]
+        );
+        return res.insertId;
+    }
+
+    async deleteDevice(deviceId) {
+        await pool.execute(
+            `DELETE FROM Device WHERE device_id = ?`,
+            [deviceId]
+        );
+    }
 }
 
 module.exports = new AdminService();

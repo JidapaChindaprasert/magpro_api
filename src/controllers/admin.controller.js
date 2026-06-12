@@ -54,10 +54,45 @@ const deleteLesson = async (req, res, next) => {
     }
 };
 
+const getDevices = async (req, res, next) => {
+    try {
+        const devices = await adminService.getAllDevices();
+        res.status(200).json({ success: true, data: devices });
+    } catch (err) {
+        next(err);
+    }
+};
+
+const createDevice = async (req, res, next) => {
+    try {
+        const { deviceName, password } = req.body;
+        if (!deviceName || !password) {
+            return res.status(400).json({ success: false, error: 'Device name and password are required' });
+        }
+        const id = await adminService.createDevice(deviceName, password);
+        res.status(201).json({ success: true, data: { id } });
+    } catch (err) {
+        next(err);
+    }
+};
+
+const deleteDevice = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        await adminService.deleteDevice(id);
+        res.status(200).json({ success: true, message: 'Device deleted successfully' });
+    } catch (err) {
+        next(err);
+    }
+};
+
 module.exports = {
     getLessons,
     getLessonById,
     createLesson,
     updateLesson,
-    deleteLesson
+    deleteLesson,
+    getDevices,
+    createDevice,
+    deleteDevice
 };

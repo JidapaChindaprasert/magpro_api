@@ -21,4 +21,9 @@ router.post('/lessons', adminController.createLesson);
 router.put('/lessons/:id', adminController.updateLesson);
 router.delete('/lessons/:id', adminController.deleteLesson);
 
+// Device administration routes
+router.get('/devices', adminController.getDevices);
+router.post('/devices', adminController.createDevice);
+router.delete('/devices/:id', adminController.deleteDevice);
+
 module.exports = router;
