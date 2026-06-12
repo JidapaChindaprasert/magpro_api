@@ -1,6 +1,12 @@
 const rateLimit = require('express-rate-limit');
 const logger = require('../config/logger');
 
+// Disabled 15-minute login lock as requested
+const loginLimiter = (req, res, next) => {
+    next();
+};
+
+/*
 const loginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 5, // Limit each IP to 5 login requests per windowMs
@@ -12,6 +18,7 @@ const loginLimiter = rateLimit({
         });
     }
 });
+*/
 
 module.exports = {
     loginLimiter
