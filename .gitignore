@@ -6,6 +6,12 @@ package-lock.json
 .env
 .env.local
 .env.*.local
+.env.example
+
+# Test scripts
+test_api.js
+test_api2.js
+test_api*.js
 
 # Logs
 logs
