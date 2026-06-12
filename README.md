@@ -76,3 +76,25 @@ To ensure the backend server runs continuously in the background and restarts au
    pm2 logs
    pm2 status
    ```
+
+---
+
+## 👥 Managing Users & Admins
+
+Since self-registration of administrators from the public web interface is a security risk, we provide a Command-Line Interface (CLI) script to easily create Admin or Instructor users:
+
+```bash
+node scripts/create-admin.js <email> <password> <firstname> <lastname> [role]
+```
+
+### Parameters:
+- `<email>`: Email address of the new user (e.g., `admin@gmail.com`).
+- `<password>`: Password (plain text, the script automatically hashes it using Argon2).
+- `<firstname>`: User's first name.
+- `<lastname>`: User's last name.
+- `[role]`: (Optional) Either `admin` or `instructor` (defaults to `admin` if not provided).
+
+### Example:
+```bash
+node scripts/create-admin.js prof.hayes@gmail.com mysecurepassword Olivia Hayes instructor
+```
