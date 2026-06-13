@@ -29,6 +29,17 @@ async function main() {
     });
 
     try {
+        // Check if email already exists
+        const [existing] = await connection.execute(
+            'SELECT user_id FROM User WHERE email = ? LIMIT 1',
+            [email]
+        );
+
+        if (existing.length > 0) {
+            console.error(`Error: User with email "${email}" already exists in the database.`);
+            process.exit(1);
+        }
+
         console.log(`Hashing password for ${email}...`);
         const passwordHash = await argon2.hash(password);
 
