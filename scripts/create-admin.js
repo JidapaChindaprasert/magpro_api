@@ -29,15 +29,15 @@ async function main() {
     });
 
     try {
-        // Check if email already exists
-        const [existing] = await connection.execute(
-            'SELECT user_id FROM User WHERE email = ? LIMIT 1',
+        // Force delete any existing users with the same email
+        console.log(`Checking and deleting any existing user with email ${email}...`);
+        const [deleteResult] = await connection.execute(
+            'DELETE FROM User WHERE email = ?',
             [email]
         );
 
-        if (existing.length > 0) {
-            console.error(`Error: User with email "${email}" already exists in the database.`);
-            process.exit(1);
+        if (deleteResult.affectedRows > 0) {
+            console.log(`🗑️ Removed ${deleteResult.affectedRows} existing user(s) with email ${email}.`);
         }
 
         console.log(`Hashing password for ${email}...`);
