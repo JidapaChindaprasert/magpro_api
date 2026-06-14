@@ -8,14 +8,37 @@ const batchInsertTelemetry = async (req, res, next) => {
             return res.status(400).json({ success: false, error: 'Expected a non-empty array of telemetry data' });
         }
 
+        // We assume all items in the batch come from the same device.
+        const deviceName = payload[0].device_name;
+        if (!deviceName) {
+            return res.status(400).json({ success: false, error: 'Missing device_name in payload' });
+        }
+
+        // Lookup device_id from device_name
+        const [devices] = await pool.execute('SELECT device_id FROM Device WHERE device_name = ?', [deviceName]);
+        if (devices.length === 0) {
+            return res.status(404).json({ success: false, error: 'Device not found' });
+        }
+        const deviceId = devices[0].device_id;
+
+        // Lookup active connected_id for this device
+        const [connections] = await pool.execute(
+            'SELECT connected_id FROM ConnectedDevice WHERE device_id = ? AND disconnect_at IS NULL ORDER BY connect_at DESC LIMIT 1',
+            [deviceId]
+        );
+        
+        if (connections.length === 0) {
+            return res.status(400).json({ success: false, error: 'No active session found for this device' });
+        }
+        const activeConnectedId = connections[0].connected_id;
+
         // Construct the bulk insert query
-        // INSERT INTO DeviceData (connected_id, magnetic_field, raw, voltage) VALUES (?, ?, ?, ?), (?, ?, ?, ?) ...
         let placeholders = [];
         let values = [];
 
         payload.forEach(item => {
             placeholders.push('(?, ?, ?, ?)');
-            values.push(item.connected_id, item.magnetic_field, item.raw || null, item.voltage);
+            values.push(activeConnectedId, item.magnetic_field, item.raw || null, item.voltage);
         });
 
         const sql = `INSERT INTO DeviceData (connected_id, magnetic_field, raw, voltage) VALUES ${placeholders.join(', ')}`;

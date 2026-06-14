@@ -12,7 +12,7 @@ router.post(
     requireDevice,
     [
         body().isArray().withMessage('Payload must be an array of telemetry objects'),
-        body('*.connected_id').isInt().withMessage('connected_id must be an integer'),
+        body('*.device_name').isString().withMessage('device_name must be a string'),
         body('*.magnetic_field').isFloat().withMessage('magnetic_field must be a float'),
         body('*.voltage').isFloat().withMessage('voltage must be a float')
     ],
