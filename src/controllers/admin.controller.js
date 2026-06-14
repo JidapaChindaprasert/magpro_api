@@ -86,6 +86,20 @@ const deleteDevice = async (req, res, next) => {
     }
 };
 
+const updateDevice = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { deviceName, password } = req.body;
+        if (!deviceName || !password) {
+            return res.status(400).json({ success: false, error: 'Device name and password are required' });
+        }
+        await adminService.updateDevice(id, deviceName, password);
+        res.status(200).json({ success: true, message: 'Device updated successfully' });
+    } catch (err) {
+        next(err);
+    }
+};
+
 module.exports = {
     getLessons,
     getLessonById,
@@ -94,5 +108,6 @@ module.exports = {
     deleteLesson,
     getDevices,
     createDevice,
+    updateDevice,
     deleteDevice
 };

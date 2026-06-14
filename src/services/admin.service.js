@@ -419,6 +419,13 @@ class AdminService {
             [deviceId]
         );
     }
+
+    async updateDevice(deviceId, deviceName, password) {
+        await pool.execute(
+            `UPDATE Device SET device_name = ?, password = ? WHERE device_id = ?`,
+            [deviceName, password, deviceId]
+        );
+    }
 }
 
 module.exports = new AdminService();
