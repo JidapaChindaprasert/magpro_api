@@ -23,7 +23,7 @@ const batchInsertTelemetry = async (req, res, next) => {
 
         // Lookup active connected_id for this device
         const [connections] = await pool.execute(
-            'SELECT connected_id FROM ConnectedDevice WHERE device_id = ? AND disconnect_at IS NULL ORDER BY connect_at DESC LIMIT 1',
+            'SELECT connected_id FROM ConnectedDevice WHERE device_id = ? AND disconnect_at IS NULL ORDER BY connected_at DESC LIMIT 1',
             [deviceId]
         );
         
